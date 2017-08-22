@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    compile 'org.kitteh.irc:client-lib:3.2.3'
     compile 'ninja.leaping.configurate:configurate-hocon:3.3'
 }
 
