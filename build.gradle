@@ -1,0 +1,80 @@
+plugins {
+    id 'com.github.hierynomus.license' version '0.14.0'
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'java'
+}
+
+defaultTasks 'clean', 'licenseFormat', 'build'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+archivesBaseName = project.name.toLowerCase().replace(' ', '_')
+version = "${project.version}"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'oss-sonatype-public'
+        url = 'https://oss.sonatype.org/content/repositories/public/'
+    }
+}
+
+dependencies {
+    compile 'ninja.leaping.configurate:configurate-hocon:3.3'
+}
+
+license {
+    ext.name = project.name
+    ext.organization = project.organization
+    ext.url = project.url
+    header rootProject.file('HEADER.txt')
+    ignoreFailures true
+    strictCheck true
+    include '**/*.java'
+    mapping {
+        java = 'SLASHSTAR_STYLE'
+    }
+}
+
+if (JavaVersion.current().isJava8Compatible() || JavaVersion.current().isJava9Compatible()) {
+    tasks.withType(Javadoc) {
+        // disable the crazy super-strict doclint tool in Java 8
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Xlint:-processing',
+    ]
+    options.deprecation = true
+    options.encoding = 'utf8'
+}
+
+jar {
+    classifier 'base'
+
+    manifest {
+        attributes(
+                'Built-By': System.properties['user.name'],
+                'Created-By': System.properties['java.vm.version'] + ' (' + System.properties['java.vm.vendor'] + ')',
+                'Implementation-Title': project.name,
+                'Implementation-Version': version,
+                'Implementation-Vendor': url
+        )
+    }
+}
+
+shadowJar {
+    mainSpec.sourcePaths.clear()
+    classifier ''
+    dependencies {
+        include dependency('ninja.leaping.configurate:configurate-hocon')
+    }
+}
+
+artifacts {
+    archives shadowJar
+}
