@@ -1,7 +1,7 @@
 plugins {
     id 'com.github.hierynomus.license' version '0.14.0'
     id 'com.github.johnrengelman.shadow' version '2.0.1'
-    id 'java'
+    id 'application'
 }
 
 defaultTasks 'clean', 'licenseFormat', 'build'
@@ -11,6 +11,7 @@ targetCompatibility = '1.8'
 
 archivesBaseName = project.name.toLowerCase().replace(' ', '_')
 version = "${project.version}"
+mainClassName = "${project.mainClass}"
 
 repositories {
     mavenLocal()
