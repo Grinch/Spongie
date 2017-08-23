@@ -4,7 +4,7 @@ import static org.objectweb.asm.Opcodes.ASM5;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
-import org.spongepowered.spongie.impl.plugin.loader.PluginMetadata;
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 
 import javax.annotation.Nullable;
 
@@ -32,7 +32,8 @@ public final class PluginClassVisitor extends ClassVisitor {
         this.className = name;
     }
 
-    @Override @Nullable
+    @Nullable
+    @Override
     public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
         if (visible && desc.equals(PLUGIN_DESCRIPTOR)) {
             return this.annotationVisitor = new PluginAnnotationVisitor(this.className);

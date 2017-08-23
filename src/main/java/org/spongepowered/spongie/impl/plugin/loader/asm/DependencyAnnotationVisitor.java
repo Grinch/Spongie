@@ -4,7 +4,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static org.objectweb.asm.Opcodes.ASM5;
 
 import org.spongepowered.spongie.api.plugin.meta.PluginDependency;
-import org.spongepowered.spongie.impl.plugin.loader.PluginMetadata;
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 import org.spongepowered.spongie.impl.plugin.meta.SpongiePluginDependency;
 
 import javax.annotation.Nullable;

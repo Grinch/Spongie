@@ -6,7 +6,7 @@ import static org.objectweb.asm.Opcodes.ASM5;
 import com.google.common.base.Preconditions;
 import org.objectweb.asm.AnnotationVisitor;
 import org.spongepowered.spongie.impl.plugin.loader.InvalidPluginException;
-import org.spongepowered.spongie.impl.plugin.loader.PluginMetadata;
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 
 final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
 

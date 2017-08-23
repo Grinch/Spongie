@@ -4,6 +4,7 @@ import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.spongepowered.spongie.impl.SpongieImpl;
 import org.spongepowered.spongie.impl.plugin.loader.asm.PluginClassVisitor;
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;

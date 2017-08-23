@@ -1,4 +1,4 @@
-package org.spongepowered.spongie.impl.plugin.loader;
+package org.spongepowered.spongie.impl.plugin.loader.meta;
 
 import org.spongepowered.spongie.impl.plugin.meta.SpongiePluginDependency;
 

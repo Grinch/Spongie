@@ -2,6 +2,8 @@ package org.spongepowered.spongie.impl.plugin.loader;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
+
 public class PluginCandidate {
 
     private final String pluginClass;
