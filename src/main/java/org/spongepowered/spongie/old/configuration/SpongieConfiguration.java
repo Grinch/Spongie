@@ -3,12 +3,12 @@
  *
  * Copyright (c) AlmuraDev <http://github.com/AlmuraDev/>
  */
-package org.spongepowered.spongie.configuration;
+package org.spongepowered.spongie.old.configuration;
 
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
-import org.spongepowered.spongie.configuration.category.ConnectionCategory;
-import org.spongepowered.spongie.configuration.category.GlobalCategory;
+import org.spongepowered.spongie.old.configuration.category.ConnectionCategory;
+import org.spongepowered.spongie.old.configuration.category.GlobalCategory;
 
 @ConfigSerializable
 public class SpongieConfiguration extends AbstractConfiguration {

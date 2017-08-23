@@ -23,8 +23,19 @@ repositories {
 }
 
 dependencies {
-    compile 'org.kitteh.irc:client-lib:3.2.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.1'
+    compile 'com.google.inject:guice:4.1.0'
     compile 'ninja.leaping.configurate:configurate-hocon:3.3'
+    compile 'ninja.leaping.configurate:configurate-gson:3.3'
+    compile 'ninja.leaping.configurate:configurate-yaml:3.3'
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    // TODO This needs to only be in the impl of Spongie
+    compile 'org.ow2.asm:asm-debug-all:5.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.8.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.8.2'
+    compile group: 'org.apache.logging.log4j', name: 'log4j-slf4j-impl', version: '2.8.2'
+    // TODO This needs to only be in IRC module
+    compile 'org.kitteh.irc:client-lib:3.2.3'
 }
 
 license {

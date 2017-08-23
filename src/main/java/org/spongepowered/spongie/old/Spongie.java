@@ -3,16 +3,16 @@
  *
  * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
  */
-package org.spongepowered.spongie;
+package org.spongepowered.spongie.old;
 
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.kitteh.irc.client.library.Client;
 import org.kitteh.irc.client.library.util.AcceptingTrustManagerFactory;
-import org.spongepowered.spongie.configuration.MappedConfigurationAdapter;
-import org.spongepowered.spongie.configuration.SpongieConfiguration;
-import org.spongepowered.spongie.configuration.category.ConnectionCategory;
-import org.spongepowered.spongie.configuration.category.GlobalCategory;
+import org.spongepowered.spongie.old.configuration.MappedConfigurationAdapter;
+import org.spongepowered.spongie.old.configuration.SpongieConfiguration;
+import org.spongepowered.spongie.old.configuration.category.ConnectionCategory;
+import org.spongepowered.spongie.old.configuration.category.GlobalCategory;
 
 import java.io.IOException;
 import java.lang.reflect.Field;

@@ -1,4 +1,4 @@
-package org.spongepowered.spongie;
+package org.spongepowered.spongie.old;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

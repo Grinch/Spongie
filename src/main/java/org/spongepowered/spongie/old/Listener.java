@@ -1,10 +1,9 @@
-package org.spongepowered.spongie;
+package org.spongepowered.spongie.old;
 
 import net.engio.mbassy.listener.Handler;
 import org.kitteh.irc.client.library.event.channel.ChannelJoinEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelMessageEvent;
 import org.kitteh.irc.client.library.event.channel.ChannelPartEvent;
-import org.kitteh.irc.client.library.event.helper.MessageEvent;
 
 public class Listener {
 
