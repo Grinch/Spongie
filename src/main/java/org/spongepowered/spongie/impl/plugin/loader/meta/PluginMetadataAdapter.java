@@ -32,7 +32,6 @@ public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
         out.beginObject();
         out.name("id").value(value.getId());
         writeIfPresent(out, "name", value.getName());
-        writeIfPresent(out, "name", value.getName());
         writeIfPresent(out, "version", value.getVersion());
         writeIfPresent(out, "description", value.getDescription());
 

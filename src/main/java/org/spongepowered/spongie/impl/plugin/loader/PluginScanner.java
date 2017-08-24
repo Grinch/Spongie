@@ -1,9 +1,8 @@
 package org.spongepowered.spongie.impl.plugin.loader;
 
-import org.apache.logging.log4j.LogManager;
+import com.google.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
-import org.spongepowered.spongie.impl.SpongieImpl;
 import org.spongepowered.spongie.impl.plugin.loader.asm.PluginClassVisitor;
 import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadataSerializer;
@@ -52,8 +51,7 @@ public final class PluginScanner {
     private static final String METADATA_FILE = "plugin.info";
     private static final String JAVA_HOME = System.getProperty("java.home");
 
-    // TODO Needs to use the impl logger
-    private static final Logger logger = LogManager.getLogger("Scanner");
+    @Inject private Logger logger;
 
     private final Map<String, PluginCandidate> plugins = new HashMap<>();
     private final Set<String> pluginClasses = new HashSet<>();

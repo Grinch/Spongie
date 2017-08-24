@@ -12,6 +12,9 @@ import javax.annotation.Nullable;
 public final class Spongie {
 
     @Inject private static Application application;
+    @Inject private static EventManager eventManager;
+    @Inject private static PluginManager pluginManager;
+    @Inject private static ServiceManager serviceManager;
 
     private static <T> T check(@Nullable T instance) {
         checkState(instance != null, "Spongie has not been initialized!");
@@ -23,14 +26,14 @@ public final class Spongie {
     }
 
     public static EventManager getEventManager() {
-        return getApplication().getEventManager();
+        return check(eventManager);
     }
 
     public static PluginManager getPluginManager() {
-        return getApplication().getPluginManager();
+        return check(pluginManager);
     }
 
     public static ServiceManager getServiceManager() {
-        return getApplication().getServiceManager();
+        return check(serviceManager);
     }
 }

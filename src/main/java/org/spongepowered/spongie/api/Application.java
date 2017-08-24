@@ -6,9 +6,15 @@ import org.spongepowered.spongie.api.service.ServiceManager;
 
 public interface Application {
 
-    EventManager getEventManager();
+    default EventManager getEventManager() {
+        return Spongie.getEventManager();
+    }
 
-    PluginManager getPluginManager();
+    default PluginManager getPluginManager() {
+        return Spongie.getPluginManager();
+    }
 
-    ServiceManager getServiceManager();
+    default ServiceManager getServiceManager() {
+        return Spongie.getServiceManager();
+    }
 }

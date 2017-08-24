@@ -1,14 +1,26 @@
 package org.spongepowered.spongie.impl;
 
-import org.spongepowered.spongie.api.Spongie;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.spongie.impl.inject.SpongieImplementationModule;
+import org.spongepowered.spongie.impl.inject.SpongieModule;
 import org.spongepowered.spongie.impl.plugin.loader.PluginScanner;
 
 import java.net.URLClassLoader;
 
 public final class SpongieImpl {
 
+    @Inject private static SpongieApplication application;
+    private static Logger logger = LogManager.getLogger("Spongie");
+
     public static SpongieApplication getApplication() {
-        return (SpongieApplication) Spongie.getApplication();
+        return application;
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 
     public static LaunchClassLoader getClassLoader() {
@@ -19,8 +31,11 @@ public final class SpongieImpl {
         final LaunchClassLoader classLoader = new LaunchClassLoader(((URLClassLoader) SpongieImpl.class.getClassLoader()).getURLs());
         Thread.currentThread().setContextClassLoader(classLoader);
 
+        Guice.createInjector(new SpongieModule(), new SpongieImplementationModule());
+
         final PluginScanner scanner = new PluginScanner();
         scanner.scanClasspath(getClassLoader(), true);
-        System.err.println("Test!");
+
+        logger.error(SpongieImpl.getApplication().getEventManager());
     }
 }
