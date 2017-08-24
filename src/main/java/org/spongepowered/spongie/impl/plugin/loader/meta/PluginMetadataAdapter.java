@@ -79,7 +79,7 @@ public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
             }
 
             switch (name) {
-                case "modid":
+                case "id":
                     id = in.nextString();
                     metadataBuilder.id(id);
                     break;
@@ -92,7 +92,7 @@ public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
                 case "description":
                     metadataBuilder.description(in.nextString());
                     break;
-                case "authorList":
+                case "authors":
                     in.beginArray();
                     while (in.hasNext()) {
                         metadataBuilder.addAuthor(in.nextString());
