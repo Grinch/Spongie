@@ -4,30 +4,44 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.spongie.impl.event.SpongieEventManager;
 import org.spongepowered.spongie.impl.inject.SpongieImplementationModule;
 import org.spongepowered.spongie.impl.inject.SpongieModule;
+import org.spongepowered.spongie.impl.plugin.SpongiePluginManager;
 import org.spongepowered.spongie.impl.plugin.loader.PluginScanner;
+import org.spongepowered.spongie.impl.service.SpongieServiceManager;
 
 import java.net.URLClassLoader;
 
 public final class SpongieImpl {
 
-    @Inject private static SpongieApplication application;
-    private static Logger logger = LogManager.getLogger("Spongie");
+    @Inject private static SpongieEventManager eventManager;
+    @Inject private static SpongiePluginManager pluginManager;
+    @Inject private static SpongieServiceManager serviceManager;
 
-    public static SpongieApplication getApplication() {
-        return application;
-    }
+    private static Logger logger = LogManager.getLogger("Spongie");
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    public static SpongieEventManager getEventManager() {
+        return eventManager;
+    }
+
+    public static SpongiePluginManager getPluginManager() {
+        return pluginManager;
+    }
+
+    public static SpongieServiceManager getServiceManager() {
+        return serviceManager;
     }
 
     public static LaunchClassLoader getClassLoader() {
         return (LaunchClassLoader) Thread.currentThread().getContextClassLoader();
     }
 
-    public static void launch() {
+    static void launch() {
         final LaunchClassLoader classLoader = new LaunchClassLoader(((URLClassLoader) SpongieImpl.class.getClassLoader()).getURLs());
         Thread.currentThread().setContextClassLoader(classLoader);
 
@@ -35,7 +49,5 @@ public final class SpongieImpl {
 
         final PluginScanner scanner = new PluginScanner();
         scanner.scanClasspath(getClassLoader(), true);
-
-        logger.error(SpongieImpl.getApplication().getEventManager());
     }
 }

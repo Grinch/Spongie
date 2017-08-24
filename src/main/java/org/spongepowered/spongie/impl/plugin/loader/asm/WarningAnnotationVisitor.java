@@ -1,14 +1,14 @@
 package org.spongepowered.spongie.impl.plugin.loader.asm;
 
-import com.google.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.AnnotationVisitor;
+import org.spongepowered.spongie.impl.SpongieImpl;
 
 import javax.annotation.Nullable;
 
 abstract class WarningAnnotationVisitor extends AnnotationVisitor {
 
-    @Inject private Logger logger;
+    private static final Logger logger = SpongieImpl.getLogger();
 
     final String className;
 

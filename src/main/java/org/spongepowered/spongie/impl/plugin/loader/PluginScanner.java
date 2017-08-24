@@ -1,8 +1,8 @@
 package org.spongepowered.spongie.impl.plugin.loader;
 
-import com.google.inject.Inject;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
+import org.spongepowered.spongie.impl.SpongieImpl;
 import org.spongepowered.spongie.impl.plugin.loader.asm.PluginClassVisitor;
 import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadataSerializer;
@@ -50,8 +50,7 @@ public final class PluginScanner {
 
     private static final String METADATA_FILE = "plugin.info";
     private static final String JAVA_HOME = System.getProperty("java.home");
-
-    @Inject private Logger logger;
+    private static final Logger logger = SpongieImpl.getLogger();
 
     private final Map<String, PluginCandidate> plugins = new HashMap<>();
     private final Set<String> pluginClasses = new HashSet<>();
@@ -76,7 +75,6 @@ public final class PluginScanner {
                 logger.trace("Skipping classpath JAR file: {}", url);
                 continue;
             }
-
 
             URI source;
             try {

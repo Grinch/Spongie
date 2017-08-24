@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public final class PluginSource {
 
-    public static final PluginSource CLASSPATH = new PluginSource();
+    static final PluginSource CLASSPATH = new PluginSource();
 
     public static Optional<Path> find(Class<?> type) {
         CodeSource source = type.getProtectionDomain().getCodeSource();

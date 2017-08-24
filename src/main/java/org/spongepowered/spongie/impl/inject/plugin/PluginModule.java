@@ -5,7 +5,7 @@ import com.google.inject.Scopes;
 import org.slf4j.Logger;
 import org.spongepowered.spongie.api.plugin.PluginContainer;
 
-public class PluginModule extends AbstractModule {
+public final class PluginModule extends AbstractModule {
 
     private final PluginContainer container;
     private final Class<?> pluginClass;
