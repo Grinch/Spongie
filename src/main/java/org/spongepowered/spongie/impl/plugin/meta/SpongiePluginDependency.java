@@ -7,7 +7,7 @@ import java.util.Optional;
 public class SpongiePluginDependency implements PluginDependency {
 
     private final String id, version;
-    private final boolean isOptional;
+    private boolean isOptional;
     private final LoadOrder loadOrder;
 
     public SpongiePluginDependency(String id, String version, boolean isOptional, LoadOrder loadOrder) {
@@ -35,5 +35,9 @@ public class SpongiePluginDependency implements PluginDependency {
     @Override
     public LoadOrder getLoadOrder() {
         return this.loadOrder;
+    }
+
+    public SpongiePluginDependency required() {
+        return new SpongiePluginDependency(this.id, this.version, false, this.loadOrder);
     }
 }

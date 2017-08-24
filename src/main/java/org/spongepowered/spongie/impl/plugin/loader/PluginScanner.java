@@ -1,10 +1,12 @@
 package org.spongepowered.spongie.impl.plugin.loader;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.spongepowered.spongie.impl.SpongieImpl;
 import org.spongepowered.spongie.impl.plugin.loader.asm.PluginClassVisitor;
 import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
+import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadataSerializer;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -35,7 +37,7 @@ import java.util.zip.ZipEntry;
 
 import javax.annotation.Nullable;
 
-final class PluginScanner {
+public final class PluginScanner {
 
     private static final String ID_WARNING = "Plugin IDs should be lowercase, and only contain characters from "
             + "a-z, dashes or underscores, start with a lowercase letter, and not exceed 64 characters.";
@@ -50,14 +52,15 @@ final class PluginScanner {
     private static final String METADATA_FILE = "plugin.info";
     private static final String JAVA_HOME = System.getProperty("java.home");
 
-    private static final Logger logger = SpongieImpl.getApplication().getLogger();
+    // TODO Needs to use the impl logger
+    private static final Logger logger = LogManager.getLogger("Scanner");
 
     private final Map<String, PluginCandidate> plugins = new HashMap<>();
     private final Set<String> pluginClasses = new HashSet<>();
 
     @Nullable private FileVisitor<Path> classFileVisitor;
 
-    void scanClasspath(URLClassLoader loader, boolean scanJars) {
+    public void scanClasspath(URLClassLoader loader, boolean scanJars) {
         final Set<URI> sources = new HashSet<>();
 
         for (URL url : loader.getURLs()) {
@@ -96,7 +99,7 @@ final class PluginScanner {
         }
     }
 
-    void scanDirectory(Path path) {
+    public void scanDirectory(Path path) {
         try (DirectoryStream<Path> dir = Files.newDirectoryStream(path, JAR_FILTER)) {
             for (Path jar : dir) {
                 scanJar(jar, false);
@@ -148,7 +151,7 @@ final class PluginScanner {
                     if (!name.endsWith(CLASS_EXTENSION)) {
                         if (name.equals(METADATA_FILE)) {
                             try {
-                                metadata = PluginMetadata.read(jar);
+                                metadata = PluginMetadataSerializer.DEFAULT.read(jar);
                             } catch (IOException e) {
                                 logger.error("Failed to read plugin metadata from " + METADATA_FILE + " in {}", path, e);
                                 return;
@@ -214,7 +217,7 @@ final class PluginScanner {
         try {
             reader.accept(visitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
 
-            PluginMetadata metadata = visitor.getMetadata();
+            final PluginMetadata metadata = visitor.getMetadata();
             if (metadata == null) {
                 return null; // Not a plugin class
             }
@@ -256,7 +259,7 @@ final class PluginScanner {
         public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) {
             if (CLASS_FILE.matches(path)) {
                 try (InputStream in = Files.newInputStream(path)) {
-                    PluginCandidate candidate = scanClassFile(in, PluginSource.CLASSPATH);
+                    final PluginCandidate candidate = scanClassFile(in, PluginSource.CLASSPATH);
                     if (candidate != null) {
                         addCandidate(candidate);
                     }

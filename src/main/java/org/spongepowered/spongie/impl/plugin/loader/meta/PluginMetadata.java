@@ -1,11 +1,21 @@
 package org.spongepowered.spongie.impl.plugin.loader.meta;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import org.spongepowered.spongie.api.plugin.meta.PluginDependency;
 import org.spongepowered.spongie.impl.plugin.meta.SpongiePluginDependency;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
@@ -19,21 +29,18 @@ public final class PluginMetadata {
      */
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
 
-    public static List<PluginMetadata> read(JarInputStream jar) throws IOException {
-
-    }
-
     private final String id, name, version, description;
     private final List<String> authors;
-    private final List<SpongiePluginDependency> dependencies;
+    private final Map<String, SpongiePluginDependency> dependencies;
 
-    public PluginMetadata(String id, String name, String version, String description, List<String> authors, List<SpongiePluginDependency> dependencies) {
+    public PluginMetadata(String id, String name, String version, String description, List<String> authors, Map<String, SpongiePluginDependency>
+            dependencies) {
         this.id = id;
         this.name = name;
         this.version = version;
         this.description = description;
         this.authors = Collections.unmodifiableList(authors);
-        this.dependencies = Collections.unmodifiableList(dependencies);
+        this.dependencies = Collections.unmodifiableMap(dependencies);
     }
 
     public String getId() {
@@ -56,14 +63,36 @@ public final class PluginMetadata {
         return authors;
     }
 
-    public List<SpongiePluginDependency> getDependencies() {
+    public Map<String, SpongiePluginDependency> getDependencies() {
         return this.dependencies;
+    }
+
+    public Map<PluginDependency.LoadOrder, Set<PluginDependency>> groupDependenciesByLoadOrder() {
+        if (this.dependencies.isEmpty()) {
+            return ImmutableMap.of();
+        }
+
+        final EnumMap<PluginDependency.LoadOrder, Set<PluginDependency>> map = new EnumMap<>(PluginDependency.LoadOrder.class);
+
+        for (PluginDependency.LoadOrder order : PluginDependency.LoadOrder.values()) {
+            final ImmutableSet.Builder<PluginDependency> dependencies = ImmutableSet.builder();
+
+            for (PluginDependency dependency : this.dependencies.values()) {
+                if (dependency.getLoadOrder() == order) {
+                    dependencies.add(dependency);
+                }
+            }
+
+            map.put(order, dependencies.build());
+        }
+
+        return Maps.immutableEnumMap(map);
     }
 
     public static class Builder {
         private String id, name, version, description;
         private List<String> authors = new LinkedList<>();
-        private List<SpongiePluginDependency> dependencies = new LinkedList<>();
+        private Map<String, SpongiePluginDependency> dependencies = new HashMap<>();
 
         public Builder id(String id) {
             this.id = id;
@@ -91,7 +120,9 @@ public final class PluginMetadata {
         }
 
         public Builder addDependency(SpongiePluginDependency dependency) {
-            this.dependencies.add(dependency);
+            String id = dependency.getId();
+            checkArgument(!this.dependencies.containsKey(id), "Duplicate dependency with plugin ID: %s", id);
+            this.dependencies.put(id, dependency);
             return this;
         }
 

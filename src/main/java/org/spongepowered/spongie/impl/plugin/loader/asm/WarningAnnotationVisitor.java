@@ -1,5 +1,6 @@
 package org.spongepowered.spongie.impl.plugin.loader.asm;
 
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.AnnotationVisitor;
 import org.spongepowered.spongie.impl.SpongieImpl;
@@ -8,7 +9,8 @@ import javax.annotation.Nullable;
 
 abstract class WarningAnnotationVisitor extends AnnotationVisitor {
 
-    private static final Logger logger = SpongieImpl.getApplication().getLogger();
+    // TODO Needs to use impl logger
+    private static final Logger logger = LogManager.getLogger("ASM");
 
     final String className;
 
