@@ -4,6 +4,9 @@ import org.spongepowered.spongie.api.service.ServiceManager;
 
 import java.util.Optional;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class SpongieServiceManager implements ServiceManager {
 
     @Override

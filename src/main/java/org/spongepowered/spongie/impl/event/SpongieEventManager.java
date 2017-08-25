@@ -3,6 +3,9 @@ package org.spongepowered.spongie.impl.event;
 import org.spongepowered.spongie.api.event.Event;
 import org.spongepowered.spongie.api.event.EventManager;
 
+import javax.inject.Singleton;
+
+@Singleton
 public class SpongieEventManager implements EventManager {
 
     @Override

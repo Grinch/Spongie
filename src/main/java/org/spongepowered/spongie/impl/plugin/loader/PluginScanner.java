@@ -57,6 +57,10 @@ public final class PluginScanner {
 
     @Nullable private FileVisitor<Path> classFileVisitor;
 
+    public Map<String, PluginCandidate> getPlugins() {
+        return Collections.unmodifiableMap(plugins);
+    }
+
     public void scanClasspath(URLClassLoader loader, boolean scanJars) {
         final Set<URI> sources = new HashSet<>();
 

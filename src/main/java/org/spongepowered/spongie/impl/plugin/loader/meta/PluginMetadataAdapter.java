@@ -46,7 +46,7 @@ public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
         final Map<PluginDependency.LoadOrder, Set<PluginDependency>> dependencies = value.groupDependenciesByLoadOrder();
         // Check if there are any dependencies we can't represent in the resulting file
         // (Optional dependencies with LoadOrder.NONE)
-        Set<PluginDependency> loadOrderNone = dependencies.get(PluginDependency.LoadOrder.NONE);
+        final Set<PluginDependency> loadOrderNone = dependencies.get(PluginDependency.LoadOrder.NONE);
         if (loadOrderNone != null) {
             for (PluginDependency dependency : loadOrderNone) {
                 if (dependency.isOptional()) {

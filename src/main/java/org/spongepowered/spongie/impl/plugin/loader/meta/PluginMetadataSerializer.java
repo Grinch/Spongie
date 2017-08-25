@@ -27,7 +27,7 @@ public final class PluginMetadataSerializer {
 
     private final PluginMetadataCollectionAdapter adapter;
 
-    public PluginMetadataSerializer(PluginMetadataCollectionAdapter adapter) {
+    private PluginMetadataSerializer(PluginMetadataCollectionAdapter adapter) {
         this.adapter = adapter;
     }
 

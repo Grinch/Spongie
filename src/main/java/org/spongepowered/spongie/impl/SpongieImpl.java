@@ -8,7 +8,6 @@ import org.spongepowered.spongie.impl.event.SpongieEventManager;
 import org.spongepowered.spongie.impl.inject.SpongieImplementationModule;
 import org.spongepowered.spongie.impl.inject.SpongieModule;
 import org.spongepowered.spongie.impl.plugin.SpongiePluginManager;
-import org.spongepowered.spongie.impl.plugin.loader.PluginScanner;
 import org.spongepowered.spongie.impl.service.SpongieServiceManager;
 
 import java.net.URLClassLoader;
@@ -42,12 +41,16 @@ public final class SpongieImpl {
     }
 
     static void launch() {
+        logger.info("Spongie v0.1 Copyright (c) SpongePowered.");
+
         final LaunchClassLoader classLoader = new LaunchClassLoader(((URLClassLoader) SpongieImpl.class.getClassLoader()).getURLs());
         Thread.currentThread().setContextClassLoader(classLoader);
 
         Guice.createInjector(new SpongieModule(), new SpongieImplementationModule());
 
-        final PluginScanner scanner = new PluginScanner();
-        scanner.scanClasspath(getClassLoader(), true);
+        // TODO Configurable classpath scanning
+        pluginManager.loadPlugins(getClassLoader(), true);
+
+
     }
 }

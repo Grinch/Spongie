@@ -10,10 +10,10 @@ import java.util.List;
 
 public final class PluginMetadataCollectionAdapter extends TypeAdapter<List<PluginMetadata>> {
 
-    public static final PluginMetadataCollectionAdapter DEFAULT = new PluginMetadataCollectionAdapter(PluginMetadataAdapter.DEFAULT);
+    static final PluginMetadataCollectionAdapter DEFAULT = new PluginMetadataCollectionAdapter(PluginMetadataAdapter.DEFAULT);
     private final PluginMetadataAdapter adapter;
 
-    public PluginMetadataCollectionAdapter(PluginMetadataAdapter adapter) {
+    private PluginMetadataCollectionAdapter(PluginMetadataAdapter adapter) {
         this.adapter = adapter;
     }
 

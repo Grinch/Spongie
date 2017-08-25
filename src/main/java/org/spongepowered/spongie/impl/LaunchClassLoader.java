@@ -5,7 +5,7 @@ import java.net.URLClassLoader;
 
 public final class LaunchClassLoader extends URLClassLoader {
 
-    public LaunchClassLoader(URL[] urls) {
+    LaunchClassLoader(URL[] urls) {
         super(urls, null);
     }
 

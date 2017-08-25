@@ -67,6 +67,22 @@ public final class PluginMetadata {
         return this.dependencies;
     }
 
+    public Set<PluginDependency> collectRequiredDependencies() {
+        if (this.dependencies.isEmpty()) {
+            return ImmutableSet.of();
+        }
+
+        final ImmutableSet.Builder<PluginDependency> builder = ImmutableSet.builder();
+
+        for (PluginDependency dependency : this.dependencies.values()) {
+            if (!dependency.isOptional()) {
+                builder.add(dependency);
+            }
+        }
+
+        return builder.build();
+    }
+
     public Map<PluginDependency.LoadOrder, Set<PluginDependency>> groupDependenciesByLoadOrder() {
         if (this.dependencies.isEmpty()) {
             return ImmutableMap.of();
