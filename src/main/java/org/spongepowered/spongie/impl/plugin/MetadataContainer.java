@@ -41,11 +41,11 @@ public class MetadataContainer {
         return new MetaPluginContainer(get(id, name), source);
     }
 
-    public static MetadataContainer load() {
+    static MetadataContainer load() {
         return load("");
     }
 
-    public static MetadataContainer load(String path) {
+    private static MetadataContainer load(String path) {
         List<PluginMetadata> meta;
 
         path = path + '/' + PluginMetadata.STANDARD_FILENAME;

@@ -191,15 +191,15 @@ public final class PluginScanner {
                 boolean found = false;
 
                 for (PluginMetadata meta : metadata) {
-                    if (candidate.getPluginMetadata().getId().equals(meta.getId())) {
+                    if (candidate.getMetadata().getId().equals(meta.getId())) {
                         found = true;
-                        candidate.setPluginMetadata(meta);
+                        candidate.setMetadata(meta);
                         break;
                     }
                 }
 
                 if (!found) {
-                    logger.warn("No matching metadata found for plugin '{}' in " + METADATA_FILE + " from {}", candidate.getPluginMetadata().getId(), path);
+                    logger.warn("No matching metadata found for plugin '{}' in " + METADATA_FILE + " from {}", candidate.getMetadata().getId(), path);
                 }
             }
         }
@@ -237,20 +237,20 @@ public final class PluginScanner {
 
     private boolean addCandidate(PluginCandidate candidate) {
         final String pluginClass = candidate.getPluginClass();
-        final String id = candidate.getPluginMetadata().getId();
+        final String id = candidate.getMetadata().getId();
 
         if (!PluginMetadata.ID_PATTERN.matcher(id).matches()) {
-            logger.error("Skipping plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getPluginSource());
+            logger.error("Skipping plugin with invalid plugin ID '{}' from {}. " + ID_WARNING, id, candidate.getSource());
             return false;
         }
 
         if (this.plugins.containsKey(id)) {
-            logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getPluginSource());
+            logger.error("Skipping plugin with duplicate plugin ID '{}' from {}", id, candidate.getSource());
             return false;
         }
 
         if (!this.pluginClasses.add(pluginClass)) {
-            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getPluginSource());
+            logger.error("Skipping duplicate plugin class {} from {}", pluginClass, candidate.getSource());
             return false;
         }
 

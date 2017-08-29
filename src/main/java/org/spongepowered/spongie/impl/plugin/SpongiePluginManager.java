@@ -117,7 +117,7 @@ public final class SpongiePluginManager implements PluginManager {
         boolean updated;
         while (true) {
             updated = false;
-            Iterator<PluginCandidate> itr = successfulCandidates.iterator();
+            final Iterator<PluginCandidate> itr = successfulCandidates.iterator();
             while (itr.hasNext()) {
                 candidate = itr.next();
                 if (candidate.updateRequirements()) {
@@ -137,11 +137,11 @@ public final class SpongiePluginManager implements PluginManager {
 
         for (PluginCandidate failed : failedCandidates) {
             if (failed.isInvalid()) {
-                logger.error("Plugin '{}' from {} cannot be loaded because it is invalid", failed.getPluginMetadata().getId(), failed.getPluginSource());
+                logger.error("Plugin '{}' from {} cannot be loaded because it is invalid", failed.getMetadata().getId(), failed.getSource());
             } else {
                 // TODO Better output for the missing requirements
                 logger.error("Cannot load plugin '{}' from {} because it is missing the required dependencies {}",
-                        failed.getPluginMetadata().getId(), failed.getPluginSource(), failed.getMissingRequirements());
+                        failed.getMetadata().getId(), failed.getSource(), failed.getMissingRequirements());
             }
         }
 
@@ -149,23 +149,23 @@ public final class SpongiePluginManager implements PluginManager {
     }
 
     private void loadPlugin(PluginCandidate candidate) {
-        final String id = candidate.getPluginMetadata().getId();
-        candidate.getPluginSource().addToClasspath();
+        final String id = candidate.getMetadata().getId();
+        candidate.getSource().addToClasspath();
 
-        final PluginMetadata metadata = candidate.getPluginMetadata();
+        final PluginMetadata metadata = candidate.getMetadata();
         final String name = firstNonNull(metadata.getName(), id);
         final String version = firstNonNull(metadata.getVersion(), "unknown");
 
         try {
             Class<?> pluginClass = Class.forName(candidate.getPluginClass());
-            PluginContainer container = new SpongiePluginContainer(this.rootInjector, pluginClass, metadata, candidate.getPluginSource().getPath());
+            PluginContainer container = new SpongiePluginContainer(this.rootInjector, pluginClass, metadata, candidate.getSource().getPath());
 
             registerPlugin(container);
             Spongie.getEventManager().registerListeners(container, container.getInstance().get());
 
-            logger.info("Loaded plugin: {} {} (from {})", name, version, candidate.getPluginSource());
+            logger.info("Loaded plugin: {} {} (from {})", name, version, candidate.getSource());
         } catch (Throwable e) {
-            logger.error("Failed to load plugin: {} {} (from {})", name, version, candidate.getPluginSource(), e);
+            logger.error("Failed to load plugin: {} {} (from {})", name, version, candidate.getSource(), e);
         }
     }
 

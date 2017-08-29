@@ -16,10 +16,8 @@ import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 import org.spongepowered.spongie.impl.plugin.loader.meta.version.DefaultArtifactVersion;
 import org.spongepowered.spongie.impl.plugin.loader.meta.version.InvalidVersionSpecificationException;
 import org.spongepowered.spongie.impl.plugin.loader.meta.version.VersionRange;
-import org.spongepowered.spongie.impl.plugin.meta.SpongiePluginDependency;
 
 import java.math.BigInteger;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,8 +30,8 @@ public final class PluginCandidate {
 
     private static final Logger logger = SpongieImpl.getLogger();
     private final String pluginClass;
-    private final PluginSource pluginSource;
-    private PluginMetadata pluginMetadata;
+    private final PluginSource source;
+    private PluginMetadata metadata;
 
     private boolean invalid;
 
@@ -43,26 +41,26 @@ public final class PluginCandidate {
     @Nullable private Map<String, String> versions;
     @Nullable private Map<String, String> missingRequirements;
 
-    public PluginCandidate(String pluginClass, PluginSource pluginSource, PluginMetadata pluginMetadata) {
+    public PluginCandidate(String pluginClass, PluginSource source, PluginMetadata metadata) {
         this.pluginClass = checkNotNull(pluginClass);
-        this.pluginSource = checkNotNull(pluginSource);
-        this.pluginMetadata = checkNotNull(pluginMetadata);
+        this.source = checkNotNull(source);
+        this.metadata = checkNotNull(metadata);
     }
 
     public String getPluginClass() {
         return pluginClass;
     }
 
-    public PluginSource getPluginSource() {
-        return pluginSource;
+    public PluginSource getSource() {
+        return source;
     }
 
-    public PluginMetadata getPluginMetadata() {
-        return pluginMetadata;
+    public PluginMetadata getMetadata() {
+        return metadata;
     }
 
-    void setPluginMetadata(PluginMetadata pluginMetadata) {
-        this.pluginMetadata = pluginMetadata;
+    void setMetadata(PluginMetadata metadata) {
+        this.metadata = metadata;
     }
 
     public boolean isInvalid() {
@@ -112,7 +110,7 @@ public final class PluginCandidate {
             final PluginCandidate candidate = itr.next();
             if (!candidate.isLoadable()) {
                 itr.remove();
-                this.missingRequirements.put(candidate.pluginMetadata.getId(), this.versions.get(candidate.getPluginMetadata().getId()));
+                this.missingRequirements.put(candidate.metadata.getId(), this.versions.get(candidate.getMetadata().getId()));
             }
         }
 
@@ -122,7 +120,7 @@ public final class PluginCandidate {
     public boolean collectDependencies(Map<String, String> loadedPlugins, Map<String, PluginCandidate> candidates) {
         checkState(this.dependencies == null, "Dependencies already collected");
 
-        if (loadedPlugins.containsKey(this.pluginMetadata.getId())) {
+        if (loadedPlugins.containsKey(this.metadata.getId())) {
             this.invalid = true;
         }
 
@@ -131,11 +129,11 @@ public final class PluginCandidate {
         this.versions = new HashMap<>();
         this.missingRequirements = new HashMap<>();
 
-        for (PluginDependency dependency : this.pluginMetadata.collectRequiredDependencies()) {
+        for (PluginDependency dependency : this.metadata.collectRequiredDependencies()) {
             final String id = dependency.getId();
-            if (this.pluginMetadata.getId().equals(id)) {
+            if (this.metadata.getId().equals(id)) {
                 logger.warn("Plugin '{}' from {} requires itself to be loaded. "
-                        + "This is redundant and can be removed from the dependencies.", this.pluginMetadata.getId(), this.pluginSource);
+                        + "This is redundant and can be removed from the dependencies.", this.metadata.getId(), this.source);
                 continue;
             }
 
@@ -150,7 +148,7 @@ public final class PluginCandidate {
             }
 
             final PluginCandidate candidate = candidates.get(id);
-            if (candidate != null && verifyVersionRange(id, version, candidate.getPluginMetadata().getVersion())) {
+            if (candidate != null && verifyVersionRange(id, version, candidate.getMetadata().getVersion())) {
                 this.requirements.add(candidate);
                 continue;
             }
@@ -158,7 +156,7 @@ public final class PluginCandidate {
             this.missingRequirements.put(id, version);
         }
 
-        Map<PluginDependency.LoadOrder, Set<PluginDependency>> dependencies = this.pluginMetadata.groupDependenciesByLoadOrder();
+        Map<PluginDependency.LoadOrder, Set<PluginDependency>> dependencies = this.metadata.groupDependenciesByLoadOrder();
 
         collectOptionalDependencies(dependencies.get(PluginDependency.LoadOrder.BEFORE), loadedPlugins, candidates);
 
@@ -170,7 +168,7 @@ public final class PluginCandidate {
             this.invalid = true;
             logger.error("Invalid dependency with load order AFTER on plugin '{}' from {}. "
                             + "This is currently not supported for Spongie plugins! Requested dependencies: {}",
-                    this.pluginMetadata.getId(), this.pluginMetadata, loadAfter);
+                    this.metadata.getId(), this.metadata, loadAfter);
         }
 
         return isLoadable();
@@ -184,9 +182,9 @@ public final class PluginCandidate {
 
         for (PluginDependency dependency : dependencies) {
             final String id = dependency.getId();
-            if (this.pluginMetadata.getId().equals(id)) {
+            if (this.metadata.getId().equals(id)) {
                 logger.error("Plugin '{}' from {} cannot have a dependency on itself. This is redundant and should be "
-                        + "removed.", this.pluginMetadata.getId(), this.pluginSource);
+                        + "removed.", this.metadata.getId(), this.source);
                 this.invalid = true;
                 continue;
             }
@@ -203,7 +201,7 @@ public final class PluginCandidate {
 
             PluginCandidate candidate = candidates.get(id);
             if (candidate != null) {
-                if (verifyVersionRange(id, version, candidate.getPluginMetadata().getVersion())) {
+                if (verifyVersionRange(id, version, candidate.getMetadata().getVersion())) {
                     this.dependencies.add(candidate);
                 } else {
                     this.missingRequirements.put(id, version);
@@ -260,7 +258,7 @@ public final class PluginCandidate {
                             if (majorInstalled != null
                                     && (!majorExpected.equals(majorInstalled) || installedVersion.compareTo(range.getRecommendedVersion()) < 0)) {
                                 logger.warn("Plugin {} from {} was designed for {} {}. It may not work properly.",
-                                        this.pluginMetadata.getId(), this.pluginSource, id, range.getRecommendedVersion());
+                                        this.metadata.getId(), this.source, id, range.getRecommendedVersion());
                             }
                         }
 
@@ -270,13 +268,13 @@ public final class PluginCandidate {
                 }
             } catch (InvalidVersionSpecificationException e) {
                 logger.error("Failed to parse version range {} for dependency {} of plugin {} from {}: {}",
-                        version, id, this.pluginMetadata.getId(), this.pluginSource, e.getMessage());
+                        version, id, this.metadata.getId(), this.source, e.getMessage());
                 this.invalid = true;
             }
         } else {
             if (this.dependenciesWithUnknownVersion.add(id)) {
                 logger.warn("Cannot check version of dependency {} for plugin {} from {}: Version of dependency unknown",
-                        id, this.pluginMetadata.getId(), this.pluginSource);
+                        id, this.metadata.getId(), this.source);
             }
             return true;
         }
@@ -294,22 +292,22 @@ public final class PluginCandidate {
         }
 
         PluginCandidate candidate = (PluginCandidate) o;
-        return this.pluginMetadata.getId().equals(candidate.pluginMetadata.getId());
+        return this.metadata.getId().equals(candidate.metadata.getId());
 
     }
 
     @Override
     public int hashCode() {
-        return this.pluginMetadata.getId().hashCode();
+        return this.metadata.getId().hashCode();
     }
 
     @Override
     public String toString() {
         MoreObjects.ToStringHelper helper = MoreObjects.toStringHelper(this)
                 .omitNullValues()
-                .add("id", this.pluginMetadata.getId())
+                .add("id", this.metadata.getId())
                 .add("class", this.pluginClass)
-                .add("source", this.pluginSource);
+                .add("source", this.source);
         if (this.invalid) {
             helper.addValue("INVALID");
         } else if (this.missingRequirements != null && !this.missingRequirements.isEmpty()) {
