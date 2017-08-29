@@ -23,10 +23,6 @@ public class MetadataContainer {
         this.metadata = metadata;
     }
 
-    public boolean isEmpty() {
-        return this.metadata.isEmpty();
-    }
-
     public PluginMetadata get(String id, String name) {
         PluginMetadata meta = this.metadata.get(id);
         if (meta == null) {
