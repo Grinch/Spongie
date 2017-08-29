@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl;
 
 import com.google.inject.Guice;
@@ -10,6 +15,7 @@ import org.spongepowered.spongie.impl.inject.SpongieModule;
 import org.spongepowered.spongie.impl.plugin.SpongiePluginManager;
 import org.spongepowered.spongie.impl.service.SpongieServiceManager;
 
+import java.io.IOException;
 import java.net.URLClassLoader;
 
 public final class SpongieImpl {
@@ -40,7 +46,7 @@ public final class SpongieImpl {
         return (LaunchClassLoader) Thread.currentThread().getContextClassLoader();
     }
 
-    static void launch() {
+    static void launch() throws IOException {
         logger.info("Spongie v0.1 Copyright (c) SpongePowered.");
 
         final LaunchClassLoader classLoader = new LaunchClassLoader(((URLClassLoader) SpongieImpl.class.getClassLoader()).getURLs());
@@ -50,7 +56,5 @@ public final class SpongieImpl {
 
         // TODO Configurable classpath scanning
         pluginManager.loadPlugins(getClassLoader(), true);
-
-
     }
 }

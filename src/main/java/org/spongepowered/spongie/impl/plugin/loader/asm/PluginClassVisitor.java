@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.asm;
 
 import static org.objectweb.asm.Opcodes.ASM5;

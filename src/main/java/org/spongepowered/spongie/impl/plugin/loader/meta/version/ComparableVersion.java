@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.meta.version;
 
 // Note: This file contains custom modifications originally done in plugin-meta licensed under
@@ -62,8 +67,7 @@ import java.util.Stack;
  * @author <a href="mailto:kenney@apache.org">Kenney Westerhof</a>
  * @author <a href="mailto:hboutemy@apache.org">Hervé Boutemy</a>
  */
-public class ComparableVersion
-    implements Comparable<ComparableVersion>
+public class ComparableVersion implements Comparable<ComparableVersion>
 {
     private String value;
 
@@ -255,9 +259,7 @@ public class ComparableVersion
      * Represents a version list item. This class is used both for the global item list and for sub-lists (which start
      * with '-(number)' in the version specification).
      */
-    private static class ListItem
-        extends ArrayList<Item>
-        implements Item
+    private static class ListItem extends ArrayList<Item> implements Item
     {
         public int getType()
         {

@@ -1,7 +1,7 @@
 /*
- * This file is part of Grand Exchange, All Rights Reserved.
+ * This file is part of Spongie, All Rights Reserved.
  *
- * Copyright (c) AlmuraDev <http://github.com/AlmuraDev/>
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
  */
 package org.spongepowered.spongie.old.configuration;
 

@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.meta.version;
 
 // Note: This file contains custom modifications originally done in plugin-meta licensed under
@@ -32,7 +37,7 @@ package org.spongepowered.spongie.impl.plugin.loader.meta.version;
 public class InvalidVersionSpecificationException
     extends Exception
 {
-    public InvalidVersionSpecificationException( String message )
+    InvalidVersionSpecificationException( String message )
     {
         super( message );
     }

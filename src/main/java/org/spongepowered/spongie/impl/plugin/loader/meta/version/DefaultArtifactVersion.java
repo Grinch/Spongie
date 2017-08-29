@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.meta.version;
 
 import static com.google.common.base.Preconditions.checkNotNull;

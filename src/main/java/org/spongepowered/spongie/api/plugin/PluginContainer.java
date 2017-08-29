@@ -1,6 +1,12 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.api.plugin;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.spongie.api.plugin.meta.PluginDependency;
 
 import java.nio.file.Path;
@@ -25,12 +31,14 @@ public interface PluginContainer {
      */
     String getName();
 
+    Optional<String> getVersion();
+
     /**
      * Gets the description of the {@link Plugin} within this container.
      *
      * @see Plugin#description()
      */
-    String getDescription();
+    Optional<String> getDescription();
 
     /**
      * Gets the authors of the {@link Plugin} within this container.
@@ -70,12 +78,16 @@ public interface PluginContainer {
      *
      * @return The instance if available
      */
-    Optional<?> getInstance();
+    default Optional<?> getInstance() {
+        return Optional.empty();
+    }
 
     /**
      * Returns the assigned logger to this {@link Plugin}.
      *
      * @return The assigned logger
      */
-    Logger getLogger();
+    default Logger getLogger() {
+        return LoggerFactory.getLogger(this.getId());
+    }
 }

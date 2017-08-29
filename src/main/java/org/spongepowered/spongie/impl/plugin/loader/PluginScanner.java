@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader;
 
 import org.apache.logging.log4j.Logger;
@@ -123,7 +128,7 @@ public final class PluginScanner {
         }
     }
 
-    void scanJar(Path path, boolean classpath) {
+    private void scanJar(Path path, boolean classpath) {
         logger.trace("Scanning {} for plugins", path);
 
         List<PluginMetadata> metadata = null;

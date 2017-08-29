@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.meta;
 
 import com.google.common.collect.ImmutableList;
@@ -19,11 +24,6 @@ public final class PluginMetadataCollectionAdapter extends TypeAdapter<List<Plug
 
     @Override
     public void write(JsonWriter out, List<PluginMetadata> value) throws IOException {
-        out.beginArray();
-        for (PluginMetadata meta : value) {
-            this.adapter.write(out, meta);
-        }
-        out.endArray();
     }
 
     @Override

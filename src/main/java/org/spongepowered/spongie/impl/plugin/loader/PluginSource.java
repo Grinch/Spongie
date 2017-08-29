@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader;
 
 import org.spongepowered.spongie.impl.SpongieImpl;
@@ -43,12 +48,12 @@ public final class PluginSource {
     private final Optional<Path> path;
     private boolean onClasspath;
 
-    public PluginSource() {
+    private PluginSource() {
         this.path = Optional.empty();
         this.onClasspath = true;
     }
 
-    public PluginSource(Path path) {
+    PluginSource(Path path) {
         this.path = Optional.of(path);
         this.onClasspath = false;
     }

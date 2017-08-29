@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader.meta;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -12,6 +17,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +34,11 @@ public final class PluginMetadata {
      * 64 characters.
      */
     public static final Pattern ID_PATTERN = Pattern.compile("[a-z][a-z0-9-_]{0,63}");
+    public static final String STANDARD_FILENAME = "plugin.info";
 
-    private final String id, name, version, description;
-    private final List<String> authors;
-    private final Map<String, SpongiePluginDependency> dependencies;
+    private String id, name, version, description;
+    private List<String> authors;
+    private Map<String, SpongiePluginDependency> dependencies;
 
     public PluginMetadata(String id, String name, String version, String description, List<String> authors, Map<String, SpongiePluginDependency>
             dependencies) {
@@ -41,6 +48,13 @@ public final class PluginMetadata {
         this.description = description;
         this.authors = Collections.unmodifiableList(authors);
         this.dependencies = Collections.unmodifiableMap(dependencies);
+    }
+
+    public PluginMetadata(String id, String name) {
+        this.id = id;
+        this.name = name;
+        this.authors = new LinkedList<>();
+        this.dependencies = new LinkedHashMap<>();
     }
 
     public String getId() {

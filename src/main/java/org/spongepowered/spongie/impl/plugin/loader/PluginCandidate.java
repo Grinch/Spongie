@@ -1,3 +1,8 @@
+/*
+ * This file is part of Spongie, All Rights Reserved.
+ *
+ * Copyright (c) SpongePowered <http://github.com/SpongePowered//>
+ */
 package org.spongepowered.spongie.impl.plugin.loader;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -23,7 +28,7 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-public class PluginCandidate {
+public final class PluginCandidate {
 
     private static final Logger logger = SpongieImpl.getLogger();
     private final String pluginClass;
