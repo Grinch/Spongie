@@ -15,16 +15,10 @@ import org.spongepowered.spongie.impl.plugin.loader.meta.PluginMetadata;
 
 final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
 
-    private enum State {
-        DEFAULT, AUTHORS, DEPENDENCIES
-    }
-
     private final PluginMetadata.Builder metadataBuilder = new PluginMetadata.Builder();
     private PluginMetadata metadata;
-
     private State state = State.DEFAULT;
     private boolean hasId;
-
     PluginAnnotationVisitor(String className) {
         super(ASM5, className);
     }
@@ -108,6 +102,10 @@ final class PluginAnnotationVisitor extends WarningAnnotationVisitor {
         if (!this.hasId) {
             throw new InvalidPluginException("Plugin annotation is missing required element 'id'");
         }
+    }
+
+    private enum State {
+        DEFAULT, AUTHORS, DEPENDENCIES
     }
 
 }

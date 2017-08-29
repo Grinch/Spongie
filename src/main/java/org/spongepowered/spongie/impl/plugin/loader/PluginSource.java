@@ -20,6 +20,17 @@ import java.util.Optional;
 public final class PluginSource {
 
     static final PluginSource CLASSPATH = new PluginSource();
+    private final Optional<Path> path;
+    private boolean onClasspath;
+    private PluginSource() {
+        this.path = Optional.empty();
+        this.onClasspath = true;
+    }
+
+    PluginSource(Path path) {
+        this.path = Optional.of(path);
+        this.onClasspath = false;
+    }
 
     public static Optional<Path> find(Class<?> type) {
         CodeSource source = type.getProtectionDomain().getCodeSource();
@@ -43,19 +54,6 @@ public final class PluginSource {
         }
 
         return Optional.empty();
-    }
-
-    private final Optional<Path> path;
-    private boolean onClasspath;
-
-    private PluginSource() {
-        this.path = Optional.empty();
-        this.onClasspath = true;
-    }
-
-    PluginSource(Path path) {
-        this.path = Optional.of(path);
-        this.onClasspath = false;
     }
 
     public Optional<Path> getPath() {

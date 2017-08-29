@@ -9,6 +9,7 @@ import com.google.common.base.MoreObjects;
 import org.spongepowered.spongie.api.plugin.PluginContainer;
 
 public abstract class AbstractPluginContainer implements PluginContainer {
+
     AbstractPluginContainer() {
     }
 

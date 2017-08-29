@@ -12,8 +12,8 @@ import java.util.Optional;
 public class SpongiePluginDependency implements PluginDependency {
 
     private final String id, version;
-    private boolean isOptional;
     private final LoadOrder loadOrder;
+    private boolean isOptional;
 
     public SpongiePluginDependency(String id, String version, boolean isOptional, LoadOrder loadOrder) {
         this.id = id;

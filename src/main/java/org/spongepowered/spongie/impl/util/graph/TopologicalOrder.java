@@ -23,6 +23,25 @@ public class TopologicalOrder<T> {
         this.digraph = graph;
     }
 
+    public static <T> List<T> createOrderedLoad(DirectedGraph<T> graph) {
+        final List<T> orderedList = new ArrayList<>();
+        while (graph.getNodeCount() != 0) {
+            DirectedGraph.DataNode<T> next = null;
+            for (DirectedGraph.DataNode<T> node : graph.getNodes()) {
+                if (node.getEdgeCount() == 0) {
+                    next = node;
+                    break;
+                }
+            }
+            if (next == null) {
+                throw new IllegalStateException("Graph is cyclic!");
+            }
+            orderedList.add(next.getData());
+            graph.delete(next);
+        }
+        return orderedList;
+    }
+
     @Nullable
     public Iterable<T> order(DirectedGraph.DataNode<T> root) {
         final CycleDetector<T> cycleDetector = new CycleDetector<>(this.digraph);
@@ -44,24 +63,5 @@ public class TopologicalOrder<T> {
             }
         }
         order.push(root.getData());
-    }
-
-    public static <T>List<T> createOrderedLoad(DirectedGraph<T> graph) {
-        final List<T> orderedList = new ArrayList<>();
-        while (graph.getNodeCount() != 0) {
-            DirectedGraph.DataNode<T> next = null;
-            for (DirectedGraph.DataNode<T> node : graph.getNodes()) {
-                if (node.getEdgeCount() == 0) {
-                    next = node;
-                    break;
-                }
-            }
-            if (next == null) {
-                throw new IllegalStateException("Graph is cyclic!");
-            }
-            orderedList.add(next.getData());
-            graph.delete(next);
-        }
-        return orderedList;
     }
 }

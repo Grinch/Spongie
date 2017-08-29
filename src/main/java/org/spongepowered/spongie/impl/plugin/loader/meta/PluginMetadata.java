@@ -13,7 +13,6 @@ import com.google.common.collect.Maps;
 import org.spongepowered.spongie.api.plugin.meta.PluginDependency;
 import org.spongepowered.spongie.impl.plugin.meta.SpongiePluginDependency;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarInputStream;
 import java.util.regex.Pattern;
 
 public final class PluginMetadata {
@@ -120,6 +118,7 @@ public final class PluginMetadata {
     }
 
     public static class Builder {
+
         private String id, name, version, description;
         private List<String> authors = new LinkedList<>();
         private Map<String, SpongiePluginDependency> dependencies = new HashMap<>();

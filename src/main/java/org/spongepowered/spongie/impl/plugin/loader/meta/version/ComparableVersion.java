@@ -75,6 +75,202 @@ public class ComparableVersion implements Comparable<ComparableVersion>
 
     private ListItem items;
 
+    public ComparableVersion( String version )
+    {
+        parseVersion( version );
+    }
+
+    private static Item parseItem( boolean isDigit, String buf )
+    {
+        return isDigit ? new IntegerItem( buf ) : new StringItem( buf, false );
+    }
+
+    /**
+     * Main to test version parsing and comparison.
+     *
+     * @param args the version strings to parse and compare
+     */
+    public static void main( String... args )
+    {
+        System.out.println( "Display parameters as parsed by Maven (in canonical form) and comparison result:" );
+        if ( args.length == 0 )
+        {
+            return;
+        }
+
+        ComparableVersion prev = null;
+        int i = 1;
+        for ( String version : args )
+        {
+            ComparableVersion c = new ComparableVersion( version );
+
+            if ( prev != null )
+            {
+                int compare = prev.compareTo( c );
+                System.out.println( "   " + prev.toString() + ' '
+                    + ( ( compare == 0 ) ? "==" : ( ( compare < 0 ) ? "<" : ">" ) ) + ' ' + version );
+            }
+
+            System.out.println( String.valueOf( i++ ) + ". " + version + " == " + c.getCanonical() );
+
+            prev = c;
+        }
+    }
+
+    private static Item getFirstItem(ListItem items, int type) {
+        for (Item item : items) {
+            if (item.getType() == type) {
+                return item;
+            }
+
+            if (item.getType() == Item.LIST_ITEM) {
+                item = getFirstItem((ListItem) item, type);
+                if (item != null) {
+                    return item;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public final void parseVersion( String version )
+    {
+        this.value = version;
+
+        items = new ListItem();
+
+        version = version.toLowerCase( Locale.ENGLISH );
+
+        ListItem list = items;
+
+        Stack<Item> stack = new Stack<>();
+        stack.push( list );
+
+        boolean isDigit = false;
+
+        int startIndex = 0;
+
+        for ( int i = 0; i < version.length(); i++ )
+        {
+            char c = version.charAt( i );
+
+            if ( c == '.' )
+            {
+                if ( i == startIndex )
+                {
+                    list.add( IntegerItem.ZERO );
+                }
+                else
+                {
+                    list.add( parseItem( isDigit, version.substring( startIndex, i ) ) );
+                }
+                startIndex = i + 1;
+            }
+            else if ( c == '-' )
+            {
+                if ( i == startIndex )
+                {
+                    list.add( IntegerItem.ZERO );
+                }
+                else
+                {
+                    list.add( parseItem( isDigit, version.substring( startIndex, i ) ) );
+                }
+                startIndex = i + 1;
+
+                list.add( list = new ListItem() );
+                stack.push( list );
+            }
+            else if ( Character.isDigit( c ) )
+            {
+                if ( !isDigit && i > startIndex )
+                {
+                    list.add( new StringItem( version.substring( startIndex, i ), true ) );
+                    startIndex = i;
+
+                    list.add( list = new ListItem() );
+                    stack.push( list );
+                }
+
+                isDigit = true;
+            }
+            else
+            {
+                if ( isDigit && i > startIndex )
+                {
+                    list.add( parseItem( true, version.substring( startIndex, i ) ) );
+                    startIndex = i;
+
+                    list.add( list = new ListItem() );
+                    stack.push( list );
+                }
+
+                isDigit = false;
+            }
+        }
+
+        if ( version.length() > startIndex )
+        {
+            list.add( parseItem( isDigit, version.substring( startIndex ) ) );
+        }
+
+        while ( !stack.isEmpty() )
+        {
+            list = (ListItem) stack.pop();
+            list.normalize();
+        }
+
+        canonical = items.toString();
+    }
+
+    public int compareTo( ComparableVersion o )
+    {
+        return items.compareTo( o.items );
+    }
+
+    public String toString()
+    {
+        return value;
+    }
+
+    public String getCanonical()
+    {
+        return canonical;
+    }
+
+    public boolean equals( Object o )
+    {
+        return ( o instanceof ComparableVersion ) && canonical.equals( ( (ComparableVersion) o ).canonical );
+    }
+
+    public int hashCode()
+    {
+        return canonical.hashCode();
+    }
+
+    /**
+     * Returns the first string in this {@link ComparableVersion}. Usually this
+     * refers to the qualifier of the version.
+     *
+     * @return The first string, or null if not found
+     */
+    public String getFirstString() {
+        Item item = getFirstItem(items, Item.STRING_ITEM);
+        return item != null ? ((StringItem) item).value : null;
+    }
+
+    /**
+     * Returns the first integer in this {@link ComparableVersion}. Usually this
+     * refers to the major version.
+     *
+     * @return The first integer, or null if not found
+     */
+    public BigInteger getFirstInteger() {
+        Item item = getFirstItem(items, Item.INTEGER_ITEM);
+        return item != null ? ((IntegerItem) item).value : null;
+    }
+
     private interface Item
     {
         int INTEGER_ITEM = 0;
@@ -88,17 +284,17 @@ public class ComparableVersion implements Comparable<ComparableVersion>
         boolean isNull();
     }
 
+    // plugin-meta start: Add extra methods
+
     /**
      * Represents a numeric item in the version item list.
      */
     private static class IntegerItem
         implements Item
     {
-        private static final BigInteger BIG_INTEGER_ZERO = new BigInteger( "0" );
-
-        private final BigInteger value;
-
         public static final IntegerItem ZERO = new IntegerItem();
+        private static final BigInteger BIG_INTEGER_ZERO = new BigInteger( "0" );
+        private final BigInteger value;
 
         private IntegerItem()
         {
@@ -159,18 +355,18 @@ public class ComparableVersion implements Comparable<ComparableVersion>
             Arrays.asList( "alpha", "beta", "milestone", "rc", "snapshot", "", "sp" );
 
         private static final Properties ALIASES = new Properties();
+        /**
+         * A comparable value for the empty-string qualifier. This one is used to determine if a given qualifier makes
+         * the version older than one without a qualifier, or more recent.
+         */
+        private static final String RELEASE_VERSION_INDEX = String.valueOf( QUALIFIERS.indexOf( "" ) );
+
         static
         {
             ALIASES.put( "ga", "" );
             ALIASES.put( "final", "" );
             ALIASES.put( "cr", "rc" );
         }
-
-        /**
-         * A comparable value for the empty-string qualifier. This one is used to determine if a given qualifier makes
-         * the version older than one without a qualifier, or more recent.
-         */
-        private static final String RELEASE_VERSION_INDEX = String.valueOf( QUALIFIERS.indexOf( "" ) );
 
         private String value;
 
@@ -196,16 +392,6 @@ public class ComparableVersion implements Comparable<ComparableVersion>
             this.value = ALIASES.getProperty( value , value );
         }
 
-        public int getType()
-        {
-            return STRING_ITEM;
-        }
-
-        public boolean isNull()
-        {
-            return ( comparableQualifier( value ).compareTo( RELEASE_VERSION_INDEX ) == 0 );
-        }
-
         /**
          * Returns a comparable value for a qualifier.
          *
@@ -224,6 +410,16 @@ public class ComparableVersion implements Comparable<ComparableVersion>
             int i = QUALIFIERS.indexOf( qualifier );
 
             return i == -1 ? ( QUALIFIERS.size() + "-" + qualifier ) : String.valueOf( i );
+        }
+
+        public int getType()
+        {
+            return STRING_ITEM;
+        }
+
+        public boolean isNull()
+        {
+            return ( comparableQualifier( value ).compareTo( RELEASE_VERSION_INDEX ) == 0 );
         }
 
         public int compareTo( Item item )
@@ -346,203 +542,6 @@ public class ComparableVersion implements Comparable<ComparableVersion>
             }
             return buffer.toString();
         }
-    }
-
-    public ComparableVersion( String version )
-    {
-        parseVersion( version );
-    }
-
-    public final void parseVersion( String version )
-    {
-        this.value = version;
-
-        items = new ListItem();
-
-        version = version.toLowerCase( Locale.ENGLISH );
-
-        ListItem list = items;
-
-        Stack<Item> stack = new Stack<>();
-        stack.push( list );
-
-        boolean isDigit = false;
-
-        int startIndex = 0;
-
-        for ( int i = 0; i < version.length(); i++ )
-        {
-            char c = version.charAt( i );
-
-            if ( c == '.' )
-            {
-                if ( i == startIndex )
-                {
-                    list.add( IntegerItem.ZERO );
-                }
-                else
-                {
-                    list.add( parseItem( isDigit, version.substring( startIndex, i ) ) );
-                }
-                startIndex = i + 1;
-            }
-            else if ( c == '-' )
-            {
-                if ( i == startIndex )
-                {
-                    list.add( IntegerItem.ZERO );
-                }
-                else
-                {
-                    list.add( parseItem( isDigit, version.substring( startIndex, i ) ) );
-                }
-                startIndex = i + 1;
-
-                list.add( list = new ListItem() );
-                stack.push( list );
-            }
-            else if ( Character.isDigit( c ) )
-            {
-                if ( !isDigit && i > startIndex )
-                {
-                    list.add( new StringItem( version.substring( startIndex, i ), true ) );
-                    startIndex = i;
-
-                    list.add( list = new ListItem() );
-                    stack.push( list );
-                }
-
-                isDigit = true;
-            }
-            else
-            {
-                if ( isDigit && i > startIndex )
-                {
-                    list.add( parseItem( true, version.substring( startIndex, i ) ) );
-                    startIndex = i;
-
-                    list.add( list = new ListItem() );
-                    stack.push( list );
-                }
-
-                isDigit = false;
-            }
-        }
-
-        if ( version.length() > startIndex )
-        {
-            list.add( parseItem( isDigit, version.substring( startIndex ) ) );
-        }
-
-        while ( !stack.isEmpty() )
-        {
-            list = (ListItem) stack.pop();
-            list.normalize();
-        }
-
-        canonical = items.toString();
-    }
-
-    private static Item parseItem( boolean isDigit, String buf )
-    {
-        return isDigit ? new IntegerItem( buf ) : new StringItem( buf, false );
-    }
-
-    public int compareTo( ComparableVersion o )
-    {
-        return items.compareTo( o.items );
-    }
-
-    public String toString()
-    {
-        return value;
-    }
-
-    public String getCanonical()
-    {
-        return canonical;
-    }
-
-    public boolean equals( Object o )
-    {
-        return ( o instanceof ComparableVersion ) && canonical.equals( ( (ComparableVersion) o ).canonical );
-    }
-
-    public int hashCode()
-    {
-        return canonical.hashCode();
-    }
-
-    /**
-     * Main to test version parsing and comparison.
-     *
-     * @param args the version strings to parse and compare
-     */
-    public static void main( String... args )
-    {
-        System.out.println( "Display parameters as parsed by Maven (in canonical form) and comparison result:" );
-        if ( args.length == 0 )
-        {
-            return;
-        }
-
-        ComparableVersion prev = null;
-        int i = 1;
-        for ( String version : args )
-        {
-            ComparableVersion c = new ComparableVersion( version );
-
-            if ( prev != null )
-            {
-                int compare = prev.compareTo( c );
-                System.out.println( "   " + prev.toString() + ' '
-                    + ( ( compare == 0 ) ? "==" : ( ( compare < 0 ) ? "<" : ">" ) ) + ' ' + version );
-            }
-
-            System.out.println( String.valueOf( i++ ) + ". " + version + " == " + c.getCanonical() );
-
-            prev = c;
-        }
-    }
-
-    // plugin-meta start: Add extra methods
-    /**
-     * Returns the first string in this {@link ComparableVersion}. Usually this
-     * refers to the qualifier of the version.
-     *
-     * @return The first string, or null if not found
-     */
-    public String getFirstString() {
-        Item item = getFirstItem(items, Item.STRING_ITEM);
-        return item != null ? ((StringItem) item).value : null;
-    }
-
-    /**
-     * Returns the first integer in this {@link ComparableVersion}. Usually this
-     * refers to the major version.
-     *
-     * @return The first integer, or null if not found
-     */
-    public BigInteger getFirstInteger() {
-        Item item = getFirstItem(items, Item.INTEGER_ITEM);
-        return item != null ? ((IntegerItem) item).value : null;
-    }
-
-    private static Item getFirstItem(ListItem items, int type) {
-        for (Item item : items) {
-            if (item.getType() == type) {
-                return item;
-            }
-
-            if (item.getType() == Item.LIST_ITEM) {
-                item = getFirstItem((ListItem) item, type);
-                if (item != null) {
-                    return item;
-                }
-            }
-        }
-
-        return null;
     }
     // plugin-meta end
 

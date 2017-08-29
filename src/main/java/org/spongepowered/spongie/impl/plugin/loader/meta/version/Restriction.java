@@ -36,15 +36,11 @@ package org.spongepowered.spongie.impl.plugin.loader.meta.version;
  */
 public class Restriction
 {
-    private final ArtifactVersion lowerBound;
-
-    private final boolean lowerBoundInclusive;
-
-    private final ArtifactVersion upperBound;
-
-    private final boolean upperBoundInclusive;
-
     public static final Restriction EVERYTHING = new Restriction( null, false, null, false );
+    private final ArtifactVersion lowerBound;
+    private final boolean lowerBoundInclusive;
+    private final ArtifactVersion upperBound;
+    private final boolean upperBoundInclusive;
 
     public Restriction( ArtifactVersion lowerBound, boolean lowerBoundInclusive, ArtifactVersion upperBound,
                         boolean upperBoundInclusive )

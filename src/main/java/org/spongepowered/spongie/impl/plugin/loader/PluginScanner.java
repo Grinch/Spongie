@@ -43,12 +43,10 @@ import javax.annotation.Nullable;
 
 public final class PluginScanner {
 
+    static final String JAR_EXTENSION = ".jar";
     private static final String ID_WARNING = "Plugin IDs should be lowercase, and only contain characters from "
             + "a-z, dashes or underscores, start with a lowercase letter, and not exceed 64 characters.";
-
     private static final String CLASS_EXTENSION = ".class";
-    static final String JAR_EXTENSION = ".jar";
-
     private static final PathMatcher CLASS_FILE = path -> path.toString().endsWith(CLASS_EXTENSION);
     private static final PathMatcher JAR_FILE = path -> path.toString().endsWith(JAR_EXTENSION);
     private static final DirectoryStream.Filter<Path> JAR_FILTER = path -> path.toString().endsWith(JAR_EXTENSION);

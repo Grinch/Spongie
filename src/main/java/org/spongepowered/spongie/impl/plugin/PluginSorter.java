@@ -12,6 +12,7 @@ import org.spongepowered.spongie.impl.util.graph.TopologicalOrder;
 import java.util.List;
 
 class PluginSorter {
+
     static List<PluginCandidate> sort(Iterable<PluginCandidate> candidates) {
         DirectedGraph<PluginCandidate> graph = new DirectedGraph<>();
 

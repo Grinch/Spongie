@@ -137,8 +137,8 @@ public class DirectedGraph<D> {
 
     public static class DataNode<D> {
 
-        private final List<DataNode<D>> adj = Lists.newArrayList();
         final D data;
+        private final List<DataNode<D>> adj = Lists.newArrayList();
 
         public DataNode(D obj) {
             this.data = obj;
@@ -180,10 +180,10 @@ public class DirectedGraph<D> {
 
         @Override
         public boolean equals(Object o) {
-            if(o == this) {
+            if (o == this) {
                 return true;
             }
-            if(!(o instanceof DataNode)) {
+            if (!(o instanceof DataNode)) {
                 return false;
             }
             DataNode<?> d = (DataNode<?>) o;

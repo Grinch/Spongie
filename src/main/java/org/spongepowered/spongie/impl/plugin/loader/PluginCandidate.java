@@ -31,13 +31,11 @@ public final class PluginCandidate {
     private static final Logger logger = SpongieImpl.getLogger();
     private final String pluginClass;
     private final PluginSource source;
+    private final Set<String> dependenciesWithUnknownVersion = new HashSet<>();
     private PluginMetadata metadata;
-
     private boolean invalid;
-
     @Nullable private Set<PluginCandidate> dependencies;
     @Nullable private Set<PluginCandidate> requirements;
-    private final Set<String> dependenciesWithUnknownVersion = new HashSet<>();
     @Nullable private Map<String, String> versions;
     @Nullable private Map<String, String> missingRequirements;
 

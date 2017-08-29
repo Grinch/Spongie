@@ -17,28 +17,11 @@ import java.util.List;
 import java.util.Optional;
 
 public class MetadataContainer {
+
     private final ImmutableMap<String, PluginMetadata> metadata;
 
     private MetadataContainer(ImmutableMap<String, PluginMetadata> metadata) {
         this.metadata = metadata;
-    }
-
-    public PluginMetadata get(String id, String name) {
-        PluginMetadata meta = this.metadata.get(id);
-        if (meta == null) {
-            // TODO Need a way to check for dev environment
-//            if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
-//                throw new RuntimeException("Unable to find metadata for " + id);
-//            }
-
-            meta = new PluginMetadata(id, name);
-        }
-
-        return meta;
-    }
-
-    PluginContainer createContainer(String id, String name, Optional<Path> source) {
-        return new MetaPluginContainer(get(id, name), source);
     }
 
     static MetadataContainer load() {
@@ -52,9 +35,9 @@ public class MetadataContainer {
         try (InputStream in = MetadataContainer.class.getResourceAsStream(path)) {
             if (in == null) {
                 // TODO Need a way to check for dev environment
-//                if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
-//                    throw new LaunchException("Unable to find metadata file at " + path);
-//                }
+                //                if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
+                //                    throw new LaunchException("Unable to find metadata file at " + path);
+                //                }
 
                 return new MetadataContainer(ImmutableMap.of());
             }
@@ -71,5 +54,23 @@ public class MetadataContainer {
         }
 
         return new MetadataContainer(builder.build());
+    }
+
+    public PluginMetadata get(String id, String name) {
+        PluginMetadata meta = this.metadata.get(id);
+        if (meta == null) {
+            // TODO Need a way to check for dev environment
+            //            if (VanillaLaunch.ENVIRONMENT != DEVELOPMENT) {
+            //                throw new RuntimeException("Unable to find metadata for " + id);
+            //            }
+
+            meta = new PluginMetadata(id, name);
+        }
+
+        return meta;
+    }
+
+    PluginContainer createContainer(String id, String name, Optional<Path> source) {
+        return new MetaPluginContainer(get(id, name), source);
     }
 }

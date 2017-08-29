@@ -20,9 +20,41 @@ import java.util.Set;
 
 public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
 
-    public static final PluginMetadataAdapter DEFAULT = new PluginMetadataAdapter();
+    static final PluginMetadataAdapter DEFAULT = new PluginMetadataAdapter();
 
     private static final char VERSION_SEPARATOR = '@';
+
+    private static void readDependencies(JsonReader in, PluginMetadata.Builder metadataBuilder, PluginDependency.LoadOrder loadOrder,
+            Map<String, SpongiePluginDependency> requiredDependencies) throws IOException {
+        in.beginArray();
+        while (in.hasNext()) {
+            SpongiePluginDependency dependency = readDependency(in, loadOrder, true);
+
+            // Make dependency required if we already know it is required
+            final SpongiePluginDependency required = requiredDependencies.remove(dependency.getId());
+            if (required != null) {
+                if (required.getVersion() != null && !required.getVersion().equals(dependency.getVersion())) {
+                    throw new IllegalArgumentException("Found conflicting version in required dependency: "
+                            + dependency.getVersion() + " != " + required.getVersion());
+                }
+
+                dependency = dependency.required();
+            }
+
+            metadataBuilder.addDependency(dependency);
+        }
+        in.endArray();
+    }
+
+    private static SpongiePluginDependency readDependency(JsonReader in, PluginDependency.LoadOrder loadOrder, boolean optional) throws IOException {
+        final String version = in.nextString();
+        int pos = version.indexOf(VERSION_SEPARATOR);
+        if (pos < 0) {
+            return new SpongiePluginDependency(version, null, optional, loadOrder);
+        } else {
+            return new SpongiePluginDependency(version.substring(0, pos), version.substring(pos + 1), optional, loadOrder);
+        }
+    }
 
     @Override
     public void write(JsonWriter out, PluginMetadata value) throws IOException {
@@ -74,37 +106,5 @@ public class PluginMetadataAdapter extends TypeAdapter<PluginMetadata> {
             }
         }
         return null;
-    }
-
-    private static void readDependencies(JsonReader in, PluginMetadata.Builder metadataBuilder, PluginDependency.LoadOrder loadOrder,
-            Map<String, SpongiePluginDependency> requiredDependencies) throws IOException {
-        in.beginArray();
-        while (in.hasNext()) {
-            SpongiePluginDependency dependency = readDependency(in, loadOrder, true);
-
-            // Make dependency required if we already know it is required
-            final SpongiePluginDependency required = requiredDependencies.remove(dependency.getId());
-            if (required != null) {
-                if (required.getVersion() != null && !required.getVersion().equals(dependency.getVersion())) {
-                    throw new IllegalArgumentException("Found conflicting version in required dependency: "
-                            + dependency.getVersion() + " != " + required.getVersion());
-                }
-
-                dependency = dependency.required();
-            }
-
-            metadataBuilder.addDependency(dependency);
-        }
-        in.endArray();
-    }
-
-    private static SpongiePluginDependency readDependency(JsonReader in, PluginDependency.LoadOrder loadOrder, boolean optional) throws IOException {
-        final String version = in.nextString();
-        int pos = version.indexOf(VERSION_SEPARATOR);
-        if (pos < 0) {
-            return new SpongiePluginDependency(version, null, optional, loadOrder);
-        } else {
-            return new SpongiePluginDependency(version.substring(0, pos), version.substring(pos + 1), optional, loadOrder);
-        }
     }
 }

@@ -14,6 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public final class PluginMetadataSerializer {
+
     public static final PluginMetadataSerializer DEFAULT = new PluginMetadataSerializer(PluginMetadataCollectionAdapter.DEFAULT);
     private static final Charset CHARSET = StandardCharsets.UTF_8;
 

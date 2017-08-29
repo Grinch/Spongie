@@ -54,33 +54,6 @@ public class VersionRange
         this.restrictions = restrictions;
     }
 
-    public ArtifactVersion getRecommendedVersion()
-    {
-        return recommendedVersion;
-    }
-
-    public List<Restriction> getRestrictions()
-    {
-        return restrictions;
-    }
-
-    public VersionRange cloneOf()
-    {
-        List<Restriction> copiedRestrictions = null;
-
-        if ( restrictions != null )
-        {
-            copiedRestrictions = new ArrayList<>();
-
-            if ( !restrictions.isEmpty() )
-            {
-                copiedRestrictions.addAll( restrictions );
-            }
-        }
-
-        return new VersionRange( recommendedVersion, copiedRestrictions );
-    }
-
     /**
      * Create a version range from a string representation
      * <p/>
@@ -229,6 +202,33 @@ public class VersionRange
     {
         List<Restriction> restrictions = Collections.emptyList();
         return new VersionRange( new DefaultArtifactVersion( version ), restrictions );
+    }
+
+    public ArtifactVersion getRecommendedVersion()
+    {
+        return recommendedVersion;
+    }
+
+    public List<Restriction> getRestrictions()
+    {
+        return restrictions;
+    }
+
+    public VersionRange cloneOf()
+    {
+        List<Restriction> copiedRestrictions = null;
+
+        if ( restrictions != null )
+        {
+            copiedRestrictions = new ArrayList<>();
+
+            if ( !restrictions.isEmpty() )
+            {
+                copiedRestrictions.addAll( restrictions );
+            }
+        }
+
+        return new VersionRange( recommendedVersion, copiedRestrictions );
     }
 
     /**

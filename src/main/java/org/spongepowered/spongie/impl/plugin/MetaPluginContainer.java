@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MetaPluginContainer extends AbstractPluginContainer {
+
     private final String id;
 
     private final String name;
